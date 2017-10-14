@@ -8,4 +8,4 @@
 char* ler_comando();
 char** parse_comando(char*);
 
-#endif COMMAND_PARSER_H
+#endif

@@ -3,10 +3,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <string.h>
 
 typedef struct process
 {
   pid_t pid;
+  char **args;
 } process;
 
-#endif PROCESSES_MANAGER_H
+int executar_comando(char**);
+
+#endif
