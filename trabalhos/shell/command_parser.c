@@ -3,7 +3,7 @@
 char* ler_comando()
 {
     char *buffer = NULL;
-    ssize_t tamanho_buffer = 0;
+    size_t tamanho_buffer = 0;
 
     getline(&buffer, &tamanho_buffer, stdin);
 
