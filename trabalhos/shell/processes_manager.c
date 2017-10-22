@@ -15,7 +15,7 @@ int executar_comando(char **tokens)
 
         if (p.pid < 0)
         {
-            fprintf(stderr, "Erro na ececu%c%co do fork\n", 135, 198);
+            fprintf(stderr, "Erro na execu%c%co do fork\n", 135, 198);
             exit(EXIT_FAILURE);
         }
         else if (p.pid == 0) // filho
