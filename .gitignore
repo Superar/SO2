@@ -53,3 +53,6 @@ dkms.conf
 
 # Codigos do professor
 heliosrc
+
+# Analizador lexico
+lex.yy.c
