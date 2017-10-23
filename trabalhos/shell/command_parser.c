@@ -2,33 +2,33 @@
 
 Comando* init_comando()
 {
-  Comando* cmd = malloc(sizeof(Comando));
-  cmd->args = malloc(15*sizeof(char));
-  cmd->nro_args = 0;
-  cmd->err_option=0;
-  cmd->out_option = 0;
-  cmd->pipe = 0;
-  cmd->bg = 0;
-  cmd->next = NULL;
+    Comando* cmd = malloc(sizeof(Comando));
+    cmd->args = malloc(15 * sizeof(char*));
+    cmd->nro_args = 0;
+    cmd->err_option=0;
+    cmd->out_option = 0;
+    cmd->pipe = 0;
+    cmd->bg = 0;
+    cmd->next = NULL;
 
-  return cmd;
+    return cmd;
 }
 
 char* ler_comando()
 {
-  char *buffer = NULL;
-  size_t tamanho_buffer = 0;
+    char *buffer = NULL;
+    size_t tamanho_buffer = 0;
 
-  getline(&buffer, &tamanho_buffer, stdin);
+    getline(&buffer, &tamanho_buffer, stdin);
 
-  // Substitui o caracter '\n' pelo caracter '\0'
-  char* newline = strchr(buffer, '\n');
-  if (newline)
-  {
-    *newline = '\0';
-  }
+    // Substitui o caracter '\n' pelo caracter '\0'
+    char* newline = strchr(buffer, '\n');
+    if (newline)
+    {
+        *newline = '\0';
+    }
 
-  return buffer;
+    return buffer;
 }
 
 Comando* parse_comando(char *str_comando)
@@ -63,51 +63,61 @@ Comando* parse_comando(char *str_comando)
     }
     tokens[pos] = NULL; // Token NULL para saber o final
 
-  Comando *comando = init_comando();
-  Comando *cur_comando = comando;
+    Comando *comando = init_comando();
+    Comando *cur_comando = comando;
 
-  int i;
-  cur_comando->args[cur_comando->nro_args] = tokens[0];
-  cur_comando->nro_args++;
-  for (i = 1; i < pos; i++) {
-    if(tokens[i] == NULL) {
-      break;
-    }
-    else if(!strcmp(tokens[i],"&")){
-      cur_comando->bg = 1;
-    }
-    else if (tokens[i][0] == '>'){
-      if(tokens[i+1] != NULL)
-      {
-        cur_comando->out = tokens[i+1];
-        cur_comando->out_option = strlen(tokens[i]);
-        i++;
-      }
-    }
-    else if (tokens[i][0] == '<')
+    int i;
+    cur_comando->args[cur_comando->nro_args] = tokens[0];
+    cur_comando->nro_args++;
+
+    for (i = 1; i < pos; i++)
     {
-      if(tokens[i+1] != NULL)
-      {
-        cur_comando->in = tokens[i+1];
-        i++;
-      }
+        if(tokens[i] == NULL)
+        {
+            break;
+        }
+        else if(!strcmp(tokens[i],"&"))
+        {
+            cur_comando->bg = 1;
+        }
+        else if (tokens[i][0] == '>')
+        {
+            if(tokens[i+1] != NULL)
+            {
+                cur_comando->out = tokens[i+1];
+                cur_comando->out_option = strlen(tokens[i]);
+                i++;
+            }
+        }
+        else if (tokens[i][0] == '<')
+        {
+            if(tokens[i+1] != NULL)
+            {
+                cur_comando->in = tokens[i+1];
+                i++;
+            }
+        }
+        else if (!strcmp(tokens[i],"|"))
+        {
+            if(tokens[i+1] != NULL)
+            {
+                cur_comando->pipe = 1;
+                cur_comando->next = init_comando();
+                cur_comando->next->args[cur_comando->nro_args] = tokens[0];
+                cur_comando->next->nro_args++;
+                cur_comando = cur_comando->next;
+                i++;
+            }
+        }
+        else
+        {
+            cur_comando->args[cur_comando->nro_args] = tokens[i];
+            cur_comando->nro_args++;
+        }
     }
-    else if (!strcmp(tokens[i],"|")) {
-      if(tokens[i+1] != NULL) {
-        cur_comando->pipe = 1;
-        cur_comando->next = init_comando();
-        cur_comando->next->args[cur_comando->nro_args] = tokens[0];
-        cur_comando->next->nro_args++;
-        cur_comando = cur_comando->next;
-        i++;
-      }
-    } else {
-      cur_comando->args[cur_comando->nro_args] = tokens[i];
-      cur_comando->nro_args++;
-    }
-  }
+    cur_comando->args[cur_comando->nro_args] = NULL;
 
-  return comando;
+    return comando;
 }
 
 int yywrap() { return 1; }
