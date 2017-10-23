@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+#include "command_parser.h"
 
 typedef struct process
 {
@@ -13,6 +14,6 @@ typedef struct process
   char **args;
 } process;
 
-int executar_comando(char**);
+int executar_comando(Comando*);
 
 #endif

@@ -1,8 +1,8 @@
 #include "processes_manager.h"
 
-int executar_comando(char **tokens)
+int executar_comando(Comando* comandos)
 {
-    if (strcmp(tokens[0], "exit") == 0)
+    if (strcmp(comandos->args[0], "exit") == 0)
     {
         return 1;
     }
@@ -10,7 +10,7 @@ int executar_comando(char **tokens)
     {
         process p;
         p.pid = fork();
-        p.args = tokens;
+        p.args = comandos->args;
         int status;
 
         if (p.pid < 0)
