@@ -5,8 +5,8 @@
 int main(int argc, char const *argv[])
 {
     int fechar = 0;
-    char *comando;
-    char **tokens;
+    char *comando_str;
+    Comando *comandos;
 
     if (isatty(STDIN_FILENO))
     {
@@ -18,9 +18,9 @@ int main(int argc, char const *argv[])
         while (!fechar)
         {
             printf("$ ");
-            comando = ler_comando();
-            tokens = parse_comando(comando);
-            fechar = executar_comando(tokens);
+            comando_str = ler_comando();
+            comandos = parse_comando(comando_str);
+            fechar = executar_comando(comandos);
         }
         return EXIT_SUCCESS;
     }

@@ -12,6 +12,10 @@ extern int yyleng;
 extern void* setup_lexer_string(char const* line);
 extern void clean(void* buffer);
 
+#define NRO_MAX_COMANDOS 10
+
+#define TAM_BUFFER_COMANDO 100
+
 /* Tokens */
 #define NEWLINE 250
 #define IDENTIFICADOR 251
@@ -24,8 +28,23 @@ extern void clean(void* buffer);
 #define MAIORMAIOR2 588
 #define PIPE 289
 
+typedef struct Comando{
+  char** args;
+  int nro_args;
+  char* in;
+  char* out;
+  int out_option;
+  char* err;
+  int err_option;
+  int pipe;
+  int bg;
+  struct Comando* next;
+} Comando;
+
+Comando* init_comando();
+
 char* ler_comando();
-char** parse_comando(char*);
+Comando* parse_comando(char*);
 int yywrap();
 
 #endif
