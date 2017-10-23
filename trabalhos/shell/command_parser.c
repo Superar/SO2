@@ -21,7 +21,7 @@ char** parse_comando(char *comando)
 {
     int tamanho_buffer = 100, pos = 0;
     char **tokens = malloc(tamanho_buffer * sizeof(char*));
-    char *token;
+    int token;
 
     if (!tokens)
     {
@@ -29,10 +29,16 @@ char** parse_comando(char *comando)
         exit(EXIT_FAILURE);
     }
 
-    token = strtok(comando, " "); // Primeiro token
-    while (token != NULL)
+    setup_lexer_string(comando);
+    while ( (token = yylex()) )
     {
-        tokens[pos++] = token;
+        if (token != SPACE)
+        {
+            char *aux = NULL;
+            aux = malloc(yyleng * sizeof(char));
+            strcpy(aux, yytext);
+            tokens[pos++] = aux;
+        }
 
         // Caso o vetor de tokens nao seja suficiente
         if (pos == tamanho_buffer-1)
@@ -40,9 +46,10 @@ char** parse_comando(char *comando)
             tamanho_buffer += tamanho_buffer;
             tokens = realloc(tokens, tamanho_buffer);
         }
-
-        token = strtok(NULL, " "); // Proximo token
     }
     tokens[pos] = NULL; // Token NULL para saber o final
+    
     return tokens;
 }
+
+int yywrap() { return 1; }
