@@ -4,7 +4,7 @@
 - [x] $ prog parâmetros
 - [x] $ pwd
 - [x] $ exit  
-- [ ] $ prog &
+- [x] $ prog &
 - [ ] $ prog parâmetros > arquivo
 - [ ] $ prog parâmetros < arquivo
 - [ ] $ prog parâmetros > arq_saída < arq_entrada

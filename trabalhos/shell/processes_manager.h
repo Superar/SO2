@@ -8,11 +8,22 @@
 #include <string.h>
 #include "command_parser.h"
 
-typedef struct process
+#define MIN_TAM_PROCESS_TABLE 5
+
+typedef struct Processo
 {
   pid_t pid;
   char **args;
-} process;
+  int status;
+} Processo;
+
+Processo** tabela_proc;
+int tam_tabela_proc;
+int cur_index_tabela_proc;
+
+void init_process_manager();
+
+int verifica_builtins(Comando*);
 
 int executar_comando(Comando*);
 
