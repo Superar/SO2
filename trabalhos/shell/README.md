@@ -5,10 +5,10 @@
 - [x] $ pwd
 - [x] $ exit  
 - [x] $ prog &
-- [ ] $ prog parâmetros > arquivo
-- [ ] $ prog parâmetros < arquivo
-- [ ] $ prog parâmetros > arq_saída < arq_entrada
-- [ ] $ prog parâmetros >> arq_saída
+- [x] $ prog parâmetros > arquivo
+- [x] $ prog parâmetros < arquivo
+- [x] $ prog parâmetros > arq_saída < arq_entrada
+- [x] $ prog parâmetros >> arq_saída
 - [ ] $ prog parâmetros 2> arq_erros
 - [ ] $ prog parâmetros 2>> arq_erros
 - [ ] $ prog1 param_1 | prog2 param_2

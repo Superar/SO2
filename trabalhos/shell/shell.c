@@ -12,8 +12,7 @@ void sigchild(int signum){
   int pid = waitpid(-1, &status, WNOHANG);
 
   if(pid > 0) {
-    printf("Filho %d terminou\n",pid);
-    printf("$ ");
+    printf("Filho %d terminou\n", pid);
   }
 }
 
