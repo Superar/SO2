@@ -46,8 +46,11 @@ int main(int argc, char const *argv[])
         while (1)
         {
             comando_str = ler_comando();
-            comando = parse_comando(comando_str);
-            executar_comando(comando);
+            if (strlen(comando_str))
+            {
+              comando = parse_comando(comando_str);
+              executar_comando(comando);
+            }
         }
         return EXIT_SUCCESS;
     }
