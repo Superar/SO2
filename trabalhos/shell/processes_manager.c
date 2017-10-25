@@ -193,6 +193,21 @@ int verifica_builtins(Comando* comando)
   {
     jobs();
   }
+  else if (!strcmp(comando->args[0], "cd"))
+  {
+    if (comando->args[1])
+    {
+      if(chdir(comando->args[1]) == -1)
+      {
+        fprintf(stderr, "cd: %s: %s\n", comando->args[1], strerror(errno));
+      }
+    }
+    else
+    {
+      struct passwd *pw = getpwuid(getuid());
+      chdir(pw->pw_dir);
+    }
+  }
   else
   {
     return 0;

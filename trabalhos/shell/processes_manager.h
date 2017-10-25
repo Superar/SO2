@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <pwd.h>
+#include <errno.h>
 #include "command_parser.h"
 
 #define DONE 0
