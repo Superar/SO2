@@ -18,7 +18,10 @@ char* ler_comando()
 {
     char *buffer = NULL;
     size_t tamanho_buffer = 0;
-    char *path = get_current_dir_name();
+
+    char *path = malloc(TAM_BUFFER_CAMINHO * sizeof(char));
+    getcwd(path, TAM_BUFFER_CAMINHO);
+
     printf("%s $ ", path);
     getline(&buffer, &tamanho_buffer, stdin);
 

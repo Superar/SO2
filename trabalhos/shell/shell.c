@@ -2,6 +2,7 @@
 #include "command_parser.h"
 #include "processes_manager.h"
 #include <sys/types.h>
+#include <pwd.h>
 
 // Funcoes para tratamento de sinais
 
@@ -42,6 +43,11 @@ int main(int argc, char const *argv[])
         {
             kill(-getpgrp(), SIGTTIN);
         }
+
+        // Muda diretorio inicial para a home do usuario
+        struct passwd *pw = getpwuid(getuid());
+        const char *home_path = pw->pw_dir;
+        chdir(home_path);
 
         while (1)
         {

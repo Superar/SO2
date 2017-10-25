@@ -22,6 +22,8 @@ extern void clean(void* buffer);
 
 #define TAM_BUFFER_COMANDO 100
 
+#define TAM_BUFFER_CAMINHO 1024
+
 /* Tokens */
 #define NEWLINE 250
 #define IDENTIFICADOR 251
