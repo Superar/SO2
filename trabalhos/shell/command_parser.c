@@ -18,7 +18,8 @@ char* ler_comando()
 {
     char *buffer = NULL;
     size_t tamanho_buffer = 0;
-    printf("$ ");
+    char *path = get_current_dir_name();
+    printf("%s $ ", path);
     getline(&buffer, &tamanho_buffer, stdin);
 
     // Substitui o caracter '\n' pelo caracter '\0'
