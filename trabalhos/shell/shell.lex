@@ -7,6 +7,9 @@ especiais [-./~]
 #include "command_parser.h"
 %}
 
+%option nounput
+%option noinput
+
 %%
 "\n"  {return NEWLINE;}
 ({letra}|{digito}|{especiais})* {return IDENTIFICADOR;}
