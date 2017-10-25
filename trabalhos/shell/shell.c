@@ -33,8 +33,6 @@ int main(int argc, char const *argv[])
     // Se o programa foi inicializado a partir de um terminal
     if (isatty(STDIN_FILENO))
     {
-        // inicializa o gerenciador de processos do shell
-        init_process_manager();
         // Instalacao das rotinas de tratamento de sinais
         signal(SIGCHLD, sigchild);
         signal(SIGINT, sigint);
@@ -47,7 +45,6 @@ int main(int argc, char const *argv[])
 
         while (1)
         {
-            printf("$ ");
             comando_str = ler_comando();
             comando = parse_comando(comando_str);
             executar_comando(comando);

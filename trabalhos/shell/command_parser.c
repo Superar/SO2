@@ -18,7 +18,7 @@ char* ler_comando()
 {
     char *buffer = NULL;
     size_t tamanho_buffer = 0;
-
+    printf("$ ");
     getline(&buffer, &tamanho_buffer, stdin);
 
     // Substitui o caracter '\n' pelo caracter '\0'
@@ -96,6 +96,14 @@ Comando* parse_comando(char *str_comando)
                 cur_comando->in = tokens[i+1];
                 i++;
             }
+        }
+        else if (tokens[i][0] == '2') {
+          if(tokens[i+1] != NULL)
+          {
+              cur_comando->err = tokens[i+1];
+              cur_comando->err_option = strlen(tokens[i]) - 1;
+              i++;
+          }
         }
         else if (!strcmp(tokens[i],"|"))
         {
