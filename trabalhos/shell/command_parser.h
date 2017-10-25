@@ -7,7 +7,12 @@
 
 extern int yylex();
 extern char* yytext;
-extern int yyleng;
+
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+extern yy_size_t yyleng;
 
 extern void* setup_lexer_string(char const* line);
 extern void clean(void* buffer);
