@@ -12,37 +12,18 @@ void insere_processo(Processo *p)
   }
   else {
     Processo* proc_atual = lista_proc;
-    while ((proc_atual->proximo != NULL)&&(p->pid < proc_atual->pid))
+    while (proc_atual->proximo != NULL)
     {
-      printf("%d\n", proc_atual->pid);
       proc_atual = proc_atual->proximo;
     }
 
-    printf("%d\n", proc_atual->pid);
+    proc_atual->proximo = p;
+    p->anterior = proc_atual;
 
-    if(p->pid > proc_atual->pid)
-    {
-      proc_atual->proximo = p;
-      p->anterior = proc_atual;
-    }
-    else
-    {
-      if(proc_atual->anterior != NULL)
-      {
-        proc_atual->anterior->proximo = p;
-        p->anterior = proc_atual->anterior;
-      }
-      else
-      {
-        lista_proc = p;
-      }
-      p->proximo = proc_atual;
-      proc_atual->anterior = p;
-    }
   }
 }
 
-Processo* busca_processo(pid_t pid)
+Processo* busca_proc_pid(pid_t pid)
 {
   if(lista_proc == NULL)
   {
@@ -61,6 +42,25 @@ Processo* busca_processo(pid_t pid)
       return proc_atual;
     }
     return NULL;
+  }
+}
+
+Processo* busca_proc_num_job(int num_job)
+{
+  if(lista_proc == NULL)
+  {
+    return NULL;
+  }
+  else
+  {
+    Processo* proc_atual = lista_proc;
+    int i;
+    for(i = 0; (i < num_job) && (proc_atual != NULL); i++)
+    {
+      proc_atual = proc_atual->proximo;
+    }
+
+    return proc_atual;
   }
 }
 
@@ -101,6 +101,30 @@ int retira_processo(pid_t pid)
     else
     {
       return -1;
+    }
+  }
+}
+
+void jobs() {
+  if(lista_proc != NULL) {
+    Processo* proc_atual = lista_proc;
+    char status[10];
+
+    int i;
+    for(i = 1; proc_atual != NULL; i++)
+    {
+      if(proc_atual->status == RUNNING)
+      {
+        strcpy(status, "RUNNING");
+      }
+      printf("[%d] %s\t%d\t%s\n", i, status, proc_atual->pid, proc_atual->args[0]);
+
+      if(proc_atual->status == 0)
+      {
+
+      }
+
+      proc_atual = proc_atual->proximo;
     }
   }
 }
@@ -167,7 +191,7 @@ int verifica_builtins(Comando* comando)
   }
   else if(!strcmp(comando->args[0], "jobs"))
   {
-    printf("%s\n", "jobs hein");
+    jobs();
   }
   else
   {
@@ -184,6 +208,7 @@ int executar_comando(Comando* comando)
 
       p->pid = fork();
       p->args = comando->args;
+      p->status = RUNNING;
       int status;
 
       if (p->pid < 0)
@@ -198,9 +223,22 @@ int executar_comando(Comando* comando)
       }
       else // pai
       {
-          insere_processo(p);
           if(!comando->bg)
+          {
             waitpid(p->pid, &status, 0);
+
+            if(WIFSTOPPED(status)){
+              insere_processo(p);
+            }
+            else
+            {
+              free(p);
+            }
+          }
+          else
+          {
+            insere_processo(p);
+          }
           return 0;
       }
     }

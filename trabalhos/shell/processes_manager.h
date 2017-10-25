@@ -8,6 +8,10 @@
 #include <string.h>
 #include "command_parser.h"
 
+#define DONE 0
+#define RUNNING 1
+#define STOPPED 2
+
 typedef struct Processo
 {
   pid_t pid;
