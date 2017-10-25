@@ -74,13 +74,9 @@ Comando* parse_comando(char *str_comando)
     cur_comando->args[cur_comando->nro_args] = tokens[0];
     cur_comando->nro_args++;
 
-    for (i = 1; i < pos; i++)
+    for (i = 1; i < pos && tokens[i] != NULL; i++)
     {
-        if(tokens[i] == NULL)
-        {
-            break;
-        }
-        else if(!strcmp(tokens[i],"&"))
+        if(!strcmp(tokens[i],"&"))
         {
             cur_comando->bg = 1;
         }
@@ -115,7 +111,7 @@ Comando* parse_comando(char *str_comando)
             {
                 cur_comando->pipe = 1;
                 cur_comando->next = init_comando();
-                cur_comando->next->args[cur_comando->nro_args] = tokens[0];
+                cur_comando->next->args[cur_comando->next->nro_args] = tokens[i+1];
                 cur_comando->next->nro_args++;
                 cur_comando = cur_comando->next;
                 i++;
