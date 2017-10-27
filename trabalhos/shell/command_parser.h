@@ -47,8 +47,10 @@ typedef struct Comando{
 
 Comando* init_comando();
 
+void print_pwd();
 char* ler_comando();
 Comando* parse_comando(char*);
+
 int yywrap();
 
 #endif

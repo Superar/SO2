@@ -11,8 +11,8 @@
 - [x] $ prog parâmetros >> arq_saída
 - [x] $ prog parâmetros 2> arq_erros
 - [x] $ prog parâmetros 2>> arq_erros
-- [ ] $ prog1 param_1 | prog2 param_2
+- [x] $ prog1 param_1 | prog2 param_2
 - [x] $ jobs
-- [ ] $ fg %num_job
-- [ ] $ bg %num_job
+- [x] $ fg %num_job
+- [x] $ bg %num_job
 - [x] $ cd diretório

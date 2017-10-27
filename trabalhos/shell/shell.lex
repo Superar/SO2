@@ -1,6 +1,6 @@
 digito  [0-9]
 letra   [A-Za-z]
-especiais [-./~]
+especiais [-./~%*]
 
 %{
 #include <string.h>

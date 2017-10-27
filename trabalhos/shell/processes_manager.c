@@ -10,16 +10,15 @@ void insere_processo(Processo *p)
   if(lista_proc == NULL) {
     lista_proc = p;
   }
-  else {
+  else if (busca_proc_pid(p->pid) == NULL)
+  {
     Processo* proc_atual = lista_proc;
     while (proc_atual->proximo != NULL)
     {
       proc_atual = proc_atual->proximo;
     }
-
     proc_atual->proximo = p;
     p->anterior = proc_atual;
-
   }
 }
 
@@ -34,7 +33,6 @@ Processo* busca_proc_pid(pid_t pid)
     Processo* proc_atual = lista_proc;
     while ((proc_atual->proximo != NULL)&&(pid != proc_atual->pid))
     {
-      printf("%s\n$ ", "busca3");
       proc_atual = proc_atual->proximo;
     }
 
@@ -57,19 +55,20 @@ Processo* busca_proc_num_job(int num_job)
   {
     Processo* proc_atual = lista_proc;
     int i;
-    for(i = 0; (i < num_job) && (proc_atual != NULL); i++)
+    for(i = 1; (i < num_job) && (proc_atual != NULL); i++)
     {
       proc_atual = proc_atual->proximo;
     }
-
     return proc_atual;
   }
 }
 
 void atualiza_status_processo(pid_t pid, int status) {
   Processo* p = busca_proc_pid(pid);
-  p->status = status;
-
+  if(p != NULL)
+  {
+    p->status = status;
+  }
 }
 
 int retira_processo(pid_t pid)
@@ -79,7 +78,7 @@ int retira_processo(pid_t pid)
   }
   else {
     Processo* proc_atual = lista_proc;
-    while ((proc_atual->proximo != NULL)&&(pid < proc_atual->pid))
+    while ((proc_atual->proximo != NULL)&&(pid != proc_atual->pid))
     {
       proc_atual = proc_atual->proximo;
     }
@@ -113,6 +112,17 @@ int retira_processo(pid_t pid)
   }
 }
 
+void print_args(char** args)
+{
+  int i;
+  char* arg = args[0];
+
+  for(i = 1; arg != NULL; arg = args[i++])
+  {
+    printf("%s ", arg);
+  }
+}
+
 void jobs()
 {
   if(lista_proc != NULL) {
@@ -136,7 +146,9 @@ void jobs()
         strcpy(status, "DONE");
       }
 
-      printf("[%d] %s\t%d\t%s\n", i, status, proc_atual->pid, proc_atual->args[0]);
+      printf("[%d] %s\t%d\t", i, status, proc_atual->pid);
+      print_args(proc_atual->args);
+      printf("\n");
 
       proximo_proc = proc_atual->proximo;
 
@@ -203,22 +215,112 @@ void configura_redir(Processo* p, Comando* comando)
 
 int inicia_processo(Processo** p, Comando* comando)
 {
-  *p = malloc(sizeof(Processo));
+  Processo* proc_atual;
+  Comando* comando_atual = comando;
+  int pipefd[2];
+  int stdin = (int) STDIN_FILENO;
+  int stdout;
 
-  (*p)->args = comando->args;
-  (*p)->status = RUNNING;
-  (*p)->pid = fork();
-
-  if ((*p)->pid < 0)
+  while(comando_atual != NULL)
   {
-    fprintf(stderr, "Erro na execu%c%co do fork\n", 135, 198);
-    exit(EXIT_FAILURE);
+    proc_atual = malloc(sizeof(Processo));
+
+    if (comando_atual->pipe) {
+      if(pipe(pipefd) < 0) {
+          perror("Erro pipe");
+          exit(EXIT_SUCCESS);
+      }
+      stdout = pipefd[1];
+    } else {
+      stdout = (int) STDOUT_FILENO;
+    }
+
+    proc_atual->args = comando_atual->args;
+    proc_atual->status = RUNNING;
+    proc_atual->pid = fork();
+
+    if (proc_atual->pid < 0)
+    {
+      fprintf(stderr, "Erro na execu%c%co do fork\n", 135, 198);
+      exit(EXIT_FAILURE);
+    }
+    else if (proc_atual->pid == 0) // filho
+    {
+      if(stdin != (int) STDIN_FILENO)
+      {
+        if(dup2(stdin,STDIN_FILENO) < 0)
+        {
+          perror("erro in");
+          exit(EXIT_FAILURE);
+        }
+        close(stdin);
+      }
+
+      if(stdout != (int) STDOUT_FILENO)
+      {
+        if(dup2(stdout, STDOUT_FILENO) < 0)
+        {
+          perror("erro out");
+          exit(EXIT_FAILURE);
+        }
+        close(stdout);
+      }
+
+      configura_redir(proc_atual,comando_atual);
+      execvp(proc_atual->args[0], proc_atual->args);
+      fprintf(stderr, "%s: comando não encontrado\n", comando_atual->args[0]);
+      exit(EXIT_FAILURE);
+    }
+
+    if (comando_atual->pipe) {
+      stdin = pipefd[0];
+      close(stdout);
+    }
+    else if(stdin != (int) STDIN_FILENO) {
+      close(stdin);
+    }
+
+    comando_atual = comando_atual->next;
   }
-  else if ((*p)->pid == 0) // filho
+
+  *p = proc_atual;
+
+}
+
+void coloca_background(Processo* p)
+{
+  if(!kill(p->pid, SIGCONT))
   {
-    configura_redir(*p,comando);
-    execvp((*p)->args[0], (*p)->args);
-    exit(EXIT_FAILURE);
+    p->status = RUNNING;
+  }
+}
+
+void coloca_foreground(Processo* p)
+{
+  int status;
+  fg_proc = p;
+  fg_proc->status = RUNNING;
+
+  if(kill(p->pid, SIGCONT) == 0)
+  {
+    waitpid(fg_proc->pid, &status, WUNTRACED);
+    if(WIFSTOPPED(status))
+    {
+      fg_proc->status = STOPPED;
+      insere_processo(fg_proc);
+    }
+    else
+    {
+      if(retira_processo(fg_proc->pid) < 0)
+      {
+        free(fg_proc);
+      }
+    }
+    fg_proc = NULL;
+  }
+  else
+  {
+    perror("Erro no envio de sinal");
   }
 }
 
@@ -227,48 +329,17 @@ int executar_comando(Comando* comando)
   if (!verifica_builtins(comando))
   {
     Processo* p = NULL;
+
     inicia_processo(&p, comando);
 
-    // int status;
-    //
-    // p->args = comando->args;
-    // p->status = RUNNING;
-    // p->pid = fork();
-    //
-    // if (p->pid < 0)
-    // {
-    //   fprintf(stderr, "Erro na execu%c%co do fork\n", 135, 198);
-    //   exit(EXIT_FAILURE);
-    // }
-    // else if (p->pid == 0) // filho
-    // {
-    //   configura_processo(p,comando);
-    // }
-    int status;
-
-    // else // pai
-    // {
-      if(!comando->bg)
-      {
-        fg_proc = p;
-        waitpid(fg_proc->pid, &status, 0);
-        printf("%s\n", "foi");
-        if(WIFSTOPPED(status))
-        {
-          insere_processo(fg_proc);
-          fg_proc = NULL;
-        }
-        else
-        {
-          printf("%s\n", "free");
-          free(fg_proc);
-        }
-      }
-      else
-      {
-        insere_processo(p);
-      }
-    // }
+    if(!comando->bg)
+    {
+      coloca_foreground(p);
+    }
+    else
+    {
+      insere_processo(p);
+    }
   }
   return 0;
 }
@@ -300,11 +371,63 @@ int verifica_builtins(Comando* comando)
   }
   else if (!strcmp(comando->args[0], "bg"))
   {
-    printf("%s\n", "fg");
+    if(comando->args[1] != NULL)
+    {
+      int nro;
+      Processo* p = NULL;
+
+      if(comando->args[1][0] == '%')
+      {
+        nro = atoi(comando->args[1] + sizeof(char));
+        p = busca_proc_num_job(nro);
+      }
+      else
+      {
+        nro = atoi(comando->args[1]);
+        p = busca_proc_pid(nro);
+      }
+
+      if(p == NULL)
+      {
+        printf("%s\n", "Job inexistente");
+      }
+      else
+      {
+        print_args(p->args);
+        printf("\n");
+        coloca_background(p);
+      }
+    }
   }
   else if (!strcmp(comando->args[0], "fg"))
   {
-    printf("%s\n", "bg");
+    if(comando->args[1] != NULL)
+    {
+      int nro;
+      Processo* p = NULL;
+
+      if(comando->args[1][0] == '%')
+      {
+        nro = atoi(comando->args[1] + sizeof(char));
+        p = busca_proc_num_job(nro);
+      }
+      else
+      {
+        nro = atoi(comando->args[1]);
+        p = busca_proc_pid(nro);
+      }
+
+      if(p == NULL)
+      {
+        printf("%s\n", "Job inexistente");
+      }
+      else
+      {
+        print_args(p->args);
+        printf("\n");
+        coloca_foreground(p);
+      }
+    }
   }
   else
   {

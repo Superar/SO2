@@ -32,11 +32,11 @@ Processo* busca_processo(pid_t);
 
 void atualiza_status_processo(pid_t, int);
 
-
 int retira_processo(pid_t);
 
 int verifica_builtins(Comando*);
 
 int executar_comando(Comando*);
 
+Processo* busca_proc_pid(pid_t);
 #endif

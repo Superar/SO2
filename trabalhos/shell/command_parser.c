@@ -14,15 +14,21 @@ Comando* init_comando()
     return cmd;
 }
 
+void print_pwd()
+{
+  char *path = malloc(TAM_BUFFER_CAMINHO * sizeof(char));
+  getcwd(path, TAM_BUFFER_CAMINHO);
+  printf("%s", path);
+
+}
+
 char* ler_comando()
 {
     char *buffer = NULL;
     size_t tamanho_buffer = 0;
 
-    char *path = malloc(TAM_BUFFER_CAMINHO * sizeof(char));
-    getcwd(path, TAM_BUFFER_CAMINHO);
-
-    printf("%s $ ", path);
+    print_pwd();
+    printf(" $ ");
     getline(&buffer, &tamanho_buffer, stdin);
 
     // Substitui o caracter '\n' pelo caracter '\0'
@@ -111,9 +117,10 @@ Comando* parse_comando(char *str_comando)
             {
                 cur_comando->pipe = 1;
                 cur_comando->next = init_comando();
-                cur_comando->next->args[cur_comando->next->nro_args] = tokens[i+1];
-                cur_comando->next->nro_args++;
                 cur_comando = cur_comando->next;
+                cur_comando->args[0] = tokens[i+1];
+                cur_comando->nro_args++;
+
                 i++;
             }
         }
@@ -123,6 +130,7 @@ Comando* parse_comando(char *str_comando)
             cur_comando->nro_args++;
         }
     }
+
     cur_comando->args[cur_comando->nro_args] = NULL;
 
     return comando;

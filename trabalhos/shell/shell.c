@@ -19,7 +19,6 @@ void sigchild(int signum){
     }
     else
     {
-      printf("%s\n$ ", "terminou");
       atualiza_status_processo(pid, DONE);
     }
   }
@@ -27,7 +26,7 @@ void sigchild(int signum){
 
 // SIGINT: Disparado quando enviado o sinal de termino (^C)
 void sigint(int signum) {
-  printf("INT init");
+  printf("\n");
   if(fg_proc != NULL)
   {
     if(kill(fg_proc->pid, SIGINT) < 0)
@@ -39,6 +38,7 @@ void sigint(int signum) {
 
 // SIGTSTP: Disparado quando enviado o sinal de suspensao (^Z)
 void sigtstp(int signum) {
+  printf("\n");
   if(fg_proc != NULL)
   {
     if(kill(fg_proc->pid, SIGTSTP) < 0)
