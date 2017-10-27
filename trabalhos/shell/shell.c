@@ -9,22 +9,43 @@
 // SIGCHLD: Disparado quando um processos filho muda de estado
 void sigchild(int signum){
   int status;
-  //TODO: necessario lidar com os diferentes tipos de mudancas de estado
-  int pid = waitpid(-1, &status, WNOHANG);
+
+  pid_t pid = waitpid(-1, &status, WNOHANG);
 
   if(pid > 0) {
-    printf("Filho %d terminou\n", pid);
+    if(WIFSTOPPED(status))
+    {
+      atualiza_status_processo(pid, STOPPED);
+    }
+    else
+    {
+      printf("%s\n$ ", "terminou");
+      atualiza_status_processo(pid, DONE);
+    }
   }
 }
 
 // SIGINT: Disparado quando enviado o sinal de termino (^C)
 void sigint(int signum) {
-  printf("%d\n$ ", signum);
+  printf("INT init");
+  if(fg_proc != NULL)
+  {
+    if(kill(fg_proc->pid, SIGINT) < 0)
+    {
+      perror("Erro no envio de sinal ao processo");
+    }
+  }
 }
 
 // SIGTSTP: Disparado quando enviado o sinal de suspensao (^Z)
 void sigtstp(int signum) {
-  printf("%d\n$ ", signum);
+  if(fg_proc != NULL)
+  {
+    if(kill(fg_proc->pid, SIGTSTP) < 0)
+    {
+      perror("Erro no envio de sinal ao processo");
+    }
+  }
 }
 
 int main(int argc, char const *argv[])
@@ -37,7 +58,7 @@ int main(int argc, char const *argv[])
         // Instalacao das rotinas de tratamento de sinais
         signal(SIGCHLD, sigchild);
         signal(SIGINT, sigint);
-        signal(SIGTSTP, sigint);
+        signal(SIGTSTP, sigtstp);
 
         while (tcgetpgrp(STDIN_FILENO) != getpgrp())
         {

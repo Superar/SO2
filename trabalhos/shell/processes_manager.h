@@ -24,10 +24,14 @@ typedef struct Processo
 } Processo;
 
 Processo* lista_proc;
+Processo* fg_proc;
 
 void insere_processo(Processo*);
 
 Processo* busca_processo(pid_t);
+
+void atualiza_status_processo(pid_t, int);
+
 
 int retira_processo(pid_t);
 

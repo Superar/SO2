@@ -12,7 +12,7 @@
 - [x] $ prog parâmetros 2> arq_erros
 - [x] $ prog parâmetros 2>> arq_erros
 - [ ] $ prog1 param_1 | prog2 param_2
-- [ ] $ jobs
+- [x] $ jobs
 - [ ] $ fg %num_job
 - [ ] $ bg %num_job
-- [ ] $ cd diretório
+- [x] $ cd diretório
