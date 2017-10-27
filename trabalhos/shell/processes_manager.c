@@ -213,7 +213,7 @@ void configura_redir(Processo* p, Comando* comando)
   }
 }
 
-int inicia_processo(Processo** p, Comando* comando)
+void inicia_processo(Processo** p, Comando* comando)
 {
   Processo* proc_atual;
   Comando* comando_atual = comando;
