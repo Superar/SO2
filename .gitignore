@@ -56,3 +56,6 @@ heliosrc
 
 # Analizador lexico
 lex.yy.c
+
+# Executavel
+shell
