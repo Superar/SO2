@@ -7,7 +7,8 @@
 
 void insere_processo(Processo *p)
 {
-    if(lista_proc == NULL) {
+    if(lista_proc == NULL)
+    {
         lista_proc = p;
     }
     else if (busca_proc_pid(p->pid) == NULL)
@@ -63,7 +64,8 @@ Processo* busca_proc_num_job(int num_job)
     }
 }
 
-void atualiza_status_processo(pid_t pid, int status) {
+void atualiza_status_processo(pid_t pid, int status)
+{
     Processo* p = busca_proc_pid(pid);
     if(p != NULL)
     {
@@ -73,15 +75,13 @@ void atualiza_status_processo(pid_t pid, int status) {
 
 int retira_processo(pid_t pid)
 {
-    if(lista_proc == NULL) {
+    if(lista_proc == NULL)
+    {
         return -1;
     }
-    else {
-        Processo* proc_atual = lista_proc;
-        while ((proc_atual->proximo != NULL)&&(pid != proc_atual->pid))
-        {
-            proc_atual = proc_atual->proximo;
-        }
+    else
+    {
+        Processo* proc_atual = busca_proc_pid(pid);
 
         if(pid == proc_atual->pid)
         {
@@ -125,7 +125,8 @@ void print_args(char** args)
 
 void jobs()
 {
-    if(lista_proc != NULL) {
+    if(lista_proc != NULL)
+    {
         Processo* proc_atual = lista_proc;
         Processo* proximo_proc;
         char status[10];
@@ -163,10 +164,12 @@ void jobs()
 
 void configura_redir(Processo* p, Comando* comando)
 {
-    if(comando->out != NULL) {
+    if(comando->out != NULL)
+    {
         int flags = O_WRONLY|O_CREAT;
 
-        if(comando->out_option > 1) {
+        if(comando->out_option > 1)
+        {
             flags |= O_APPEND;
         }
 
@@ -181,11 +184,13 @@ void configura_redir(Processo* p, Comando* comando)
         close(fd);
     }
 
-    if(comando->in != NULL) {
+    if(comando->in != NULL)
+    {
 
         int fd = open(comando->in, O_RDONLY);
 
-        if(fd < 0) {
+        if(fd < 0)
+        {
             perror("Impossivel abrir arquivo");
             exit(EXIT_SUCCESS);
         }
@@ -194,16 +199,19 @@ void configura_redir(Processo* p, Comando* comando)
         close(fd);
     }
 
-    if(comando->err != NULL) {
+    if(comando->err != NULL)
+    {
         int flags = O_WRONLY|O_CREAT;
 
-        if(comando->err_option > 1) {
+        if(comando->err_option > 1)
+        {
             flags |= O_APPEND;
         }
 
         int fd = open(comando->err, flags);
 
-        if(fd < 0) {
+        if(fd < 0)
+        {
             perror("Impossivel abrir arquivo");
             exit(EXIT_SUCCESS);
         }
@@ -225,13 +233,17 @@ void inicia_processo(Processo** p, Comando* comando)
     {
         proc_atual = malloc(sizeof(Processo));
 
-        if (comando_atual->pipe) {
-            if(pipe(pipefd) < 0) {
+        if (comando_atual->pipe)
+        {
+            if(pipe(pipefd) < 0)
+            {
                 perror("Erro pipe");
                 exit(EXIT_SUCCESS);
             }
             stdout = pipefd[1];
-        } else {
+        }
+        else
+        {
             stdout = (int) STDOUT_FILENO;
         }
 
@@ -272,11 +284,13 @@ void inicia_processo(Processo** p, Comando* comando)
             exit(EXIT_FAILURE);
         }
 
-        if (comando_atual->pipe) {
+        if (comando_atual->pipe)
+        {
             stdin = pipefd[0];
             close(stdout);
         }
-        else if(stdin != (int) STDIN_FILENO) {
+        else if(stdin != (int) STDIN_FILENO)
+        {
             close(stdin);
         }
 
