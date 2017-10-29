@@ -7,6 +7,7 @@ LEXER_SRC=lex.yy.c
 LEXER=shell.lex
 
 all: $(EXECUTAVEL)
+	./shell
 
 clean:
 	rm -f $(OBJECTS) $(EXECUTAVEL) $(LEXER_SRC)
