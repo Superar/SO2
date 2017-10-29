@@ -85,9 +85,9 @@ int retira_processo(pid_t pid)
 
         if(pid == proc_atual->pid)
         {
-            if(proc_atual->anterior == NULL)
+            if(proc_atual->anterior == NULL) // Primeiro processo da lista
             {
-                lista_proc = proc_atual->proximo;
+                lista_proc = proc_atual->proximo; // Raiz da lista precisa mudar
                 if(lista_proc != NULL)
                 {
                     lista_proc->anterior = NULL;
@@ -107,6 +107,7 @@ int retira_processo(pid_t pid)
         }
         else
         {
+            // Erro
             return -1;
         }
     }
