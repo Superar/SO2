@@ -346,6 +346,7 @@ int executar_comando(Comando* comando)
 
 int verifica_builtins(Comando* comando)
 {
+    // builtin 'exit' sai do shell
     if (!strcmp(comando->args[0], "exit"))
     {
         exit(EXIT_SUCCESS);
@@ -354,17 +355,21 @@ int verifica_builtins(Comando* comando)
     {
         jobs();
     }
+    // builtin 'cd' muda o diretorio corrente de trabalho
     else if (!strcmp(comando->args[0], "cd"))
     {
         if (comando->args[1])
         {
+            // Possui um caminho indicado
             if(chdir(comando->args[1]) == -1)
             {
+                // Erro
                 fprintf(stderr, "cd: %s: %s\n", comando->args[1], strerror(errno));
             }
         }
         else
         {
+            // Muda o diretorio para o diretorio home do usuario
             struct passwd *pw = getpwuid(getuid());
             chdir(pw->pw_dir);
         }
