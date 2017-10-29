@@ -241,7 +241,7 @@ void inicia_processo(Processo** p, Comando* comando)
 
     if (proc_atual->pid < 0)
     {
-      fprintf(stderr, "Erro na execu%c%co do fork\n", 135, 198);
+      fprintf(stderr, "Erro na execução do fork\n");
       exit(EXIT_FAILURE);
     }
     else if (proc_atual->pid == 0) // filho

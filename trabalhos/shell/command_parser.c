@@ -33,6 +33,7 @@ char* ler_comando()
 
     // Substitui o caracter '\n' pelo caracter '\0'
     char* newline = strchr(buffer, '\n');
+
     if (newline)
     {
         *newline = '\0';
@@ -54,6 +55,7 @@ Comando* parse_comando(char *str_comando)
     }
 
     setup_lexer_string(str_comando);
+
     while ( (token = yylex()) )
     {
         if (token != SPACE)
@@ -71,6 +73,7 @@ Comando* parse_comando(char *str_comando)
             tokens = realloc(tokens, tamanho_buffer);
         }
     }
+    
     tokens[pos] = NULL; // Token NULL para saber o final
 
     Comando *comando = init_comando();

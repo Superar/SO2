@@ -32,23 +32,30 @@ extern void clean(void* buffer);
 #define MAIORMAIOR2 588
 #define PIPE 289
 
+// Estrutura resultante da analise de uma string digitada no terminal
 typedef struct Comando{
-  char** args;
-  int nro_args;
-  char* in;
-  char* out;
-  int out_option;
-  char* err;
-  int err_option;
-  int pipe;
-  int bg;
-  struct Comando* next;
+  char** args; // argumentos do programa, incluindo o proprio nome do programa
+  int nro_args; // quantidade de argumentos passados
+  char* in; // arquivo de redirecionamento de entrada (<)
+  char* out; // arquivo de redirecionamento de saida (> ou >>)
+  int out_option; // indicador do tipo de redirecionamento de saida
+  char* err; // arquivo de redirecionamento de saida de erro (2> ou 2>>)
+  int err_option; // indicador do tipo de redirecionamento de saida de erro
+  int pipe; // indicador da presenca de comunicacao em pipe
+  int bg; // indicador da opcao em background
+  struct Comando* next; // ponteiro para o proximo comando (outro lado do pipe)
 } Comando;
 
+// Inicializador da estrutura Comando
 Comando* init_comando();
 
+// Escreve na tela o diretorio atual
 void print_pwd();
+
+// Le do terminal e retorna uma string com o conteudo lido
 char* ler_comando();
+
+// Analisa lexica e sintaticamente a string lida e retorna o comando
 Comando* parse_comando(char*);
 
 int yywrap();
