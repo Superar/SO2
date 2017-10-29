@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
+/* Funcoes e variaveis do analisador lexico */
 extern int yylex();
 extern char* yytext;
 
@@ -14,6 +15,7 @@ extern int yyleng;
 extern void* setup_lexer_string(char const* line);
 extern void clean(void* buffer);
 
+/* Definicao de constantes */
 #define NRO_MAX_COMANDOS 10
 
 #define TAM_BUFFER_COMANDO 100

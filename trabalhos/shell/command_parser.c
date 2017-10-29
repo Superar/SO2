@@ -54,10 +54,13 @@ Comando* parse_comando(char *str_comando)
         exit(EXIT_FAILURE);
     }
 
+    // Seta a string lida como a string a ser processada pelo lexer
     setup_lexer_string(str_comando);
 
+    // Processa cada token
     while ( (token = yylex()) )
     {
+        // Tokens de espacos sao ignorados
         if (token != SPACE)
         {
             char *aux = NULL;
@@ -73,12 +76,16 @@ Comando* parse_comando(char *str_comando)
             tokens = realloc(tokens, tamanho_buffer);
         }
     }
-    
+
     tokens[pos] = NULL; // Token NULL para saber o final
 
     Comando *comando = init_comando();
     Comando *cur_comando = comando;
 
+    /* Cria lista ligada com todos os comandos a serem executados
+    *  Tambem analisa todos os tokens para fazer o tratamento de
+    *  redirecionamento de entrada e saida
+    */
     int i;
     cur_comando->args[cur_comando->nro_args] = tokens[0];
     cur_comando->nro_args++;
@@ -116,6 +123,7 @@ Comando* parse_comando(char *str_comando)
         }
         else if (!strcmp(tokens[i],"|"))
         {
+            // Se existir um pipe, cria um novo comando na lista
             if(tokens[i+1] != NULL)
             {
                 cur_comando->pipe = 1;
@@ -134,6 +142,7 @@ Comando* parse_comando(char *str_comando)
         }
     }
 
+    // NULL para indicar o fim dos argumentos
     cur_comando->args[cur_comando->nro_args] = NULL;
 
     return comando;
