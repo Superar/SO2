@@ -16,9 +16,9 @@ Comando* init_comando()
 
 void print_pwd()
 {
-  char *path = malloc(TAM_BUFFER_CAMINHO * sizeof(char));
-  getcwd(path, TAM_BUFFER_CAMINHO);
-  printf("%s", path);
+    char *path = malloc(TAM_BUFFER_CAMINHO * sizeof(char));
+    getcwd(path, TAM_BUFFER_CAMINHO);
+    printf("%s", path);
 
 }
 
@@ -114,12 +114,12 @@ Comando* parse_comando(char *str_comando)
             }
         }
         else if (tokens[i][0] == '2') {
-          if(tokens[i+1] != NULL)
-          {
-              cur_comando->err = tokens[i+1];
-              cur_comando->err_option = strlen(tokens[i]) - 1;
-              i++;
-          }
+            if(tokens[i+1] != NULL)
+            {
+                cur_comando->err = tokens[i+1];
+                cur_comando->err_option = strlen(tokens[i]) - 1;
+                i++;
+            }
         }
         else if (!strcmp(tokens[i],"|"))
         {

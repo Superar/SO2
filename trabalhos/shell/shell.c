@@ -8,47 +8,47 @@
 
 // SIGCHLD: Disparado quando um processos filho muda de estado
 void sigchild(int signum){
-  int status;
-  // espera pelo filho que mudou de estado
-  pid_t pid = waitpid(-1, &status, WNOHANG);
-  // caso ainda exista o filho que mudou de estado, atualizamos o valor de seu
-  // status (STOPPED ou DONE)
-  if(pid > 0) {
-    if(WIFSTOPPED(status))
-    {
-      atualiza_status_processo(pid, STOPPED);
+    int status;
+    // espera pelo filho que mudou de estado
+    pid_t pid = waitpid(-1, &status, WNOHANG);
+    // caso ainda exista o filho que mudou de estado, atualizamos o valor de seu
+    // status (STOPPED ou DONE)
+    if(pid > 0) {
+        if(WIFSTOPPED(status))
+        {
+            atualiza_status_processo(pid, STOPPED);
+        }
+        else
+        {
+            atualiza_status_processo(pid, DONE);
+        }
     }
-    else
-    {
-      atualiza_status_processo(pid, DONE);
-    }
-  }
 }
 
 // SIGINT: Disparado quando enviado o sinal de termino (^C do terminal)
 void sigint(int signum) {
-  printf("\n");
-  // Se existir um processo em foreground, propaga o sinal a ele
-  if(fg_proc != NULL)
-  {
-    if(kill(fg_proc->pid, SIGINT) < 0)
+    printf("\n");
+    // Se existir um processo em foreground, propaga o sinal a ele
+    if(fg_proc != NULL)
     {
-      perror("Erro no envio de sinal ao processo");
+        if(kill(fg_proc->pid, SIGINT) < 0)
+        {
+            perror("Erro no envio de sinal ao processo");
+        }
     }
-  }
 }
 
 // SIGTSTP: Disparado quando enviado o sinal de suspensao (^Z)
 void sigtstp(int signum) {
-  printf("\n");
-  // Se existir um processo em foreground, propaga o sinal a ele
-  if(fg_proc != NULL)
-  {
-    if(kill(fg_proc->pid, SIGTSTP) < 0)
+    printf("\n");
+    // Se existir um processo em foreground, propaga o sinal a ele
+    if(fg_proc != NULL)
     {
-      perror("Erro no envio de sinal ao processo");
+        if(kill(fg_proc->pid, SIGTSTP) < 0)
+        {
+            perror("Erro no envio de sinal ao processo");
+        }
     }
-  }
 }
 
 int main(int argc, char const *argv[])
@@ -81,10 +81,10 @@ int main(int argc, char const *argv[])
             comando_str = ler_comando();
             if (strlen(comando_str))
             {
-              // Analisa a string do comando e retorna uma estrutura Comando
-              comando = parse_comando(comando_str);
-              // Executa o comando retornado da analise
-              executar_comando(comando);
+                // Analisa a string do comando e retorna uma estrutura Comando
+                comando = parse_comando(comando_str);
+                // Executa o comando retornado da analise
+                executar_comando(comando);
             }
         }
         return EXIT_SUCCESS;

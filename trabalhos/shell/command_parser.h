@@ -36,16 +36,16 @@ extern void clean(void* buffer);
 
 // Estrutura resultante da analise de uma string digitada no terminal
 typedef struct Comando{
-  char** args; // argumentos do programa, incluindo o proprio nome do programa
-  int nro_args; // quantidade de argumentos passados
-  char* in; // arquivo de redirecionamento de entrada (<)
-  char* out; // arquivo de redirecionamento de saida (> ou >>)
-  int out_option; // indicador do tipo de redirecionamento de saida
-  char* err; // arquivo de redirecionamento de saida de erro (2> ou 2>>)
-  int err_option; // indicador do tipo de redirecionamento de saida de erro
-  int pipe; // indicador da presenca de comunicacao em pipe
-  int bg; // indicador da opcao em background
-  struct Comando* next; // ponteiro para o proximo comando (outro lado do pipe)
+    char** args; // argumentos do programa, incluindo o proprio nome do programa
+    int nro_args; // quantidade de argumentos passados
+    char* in; // arquivo de redirecionamento de entrada (<)
+    char* out; // arquivo de redirecionamento de saida (> ou >>)
+    int out_option; // indicador do tipo de redirecionamento de saida
+    char* err; // arquivo de redirecionamento de saida de erro (2> ou 2>>)
+    int err_option; // indicador do tipo de redirecionamento de saida de erro
+    int pipe; // indicador da presenca de comunicacao em pipe
+    int bg; // indicador da opcao em background
+    struct Comando* next; // ponteiro para o proximo comando (outro lado do pipe)
 } Comando;
 
 // Inicializador da estrutura Comando

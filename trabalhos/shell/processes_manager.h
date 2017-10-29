@@ -19,11 +19,11 @@
 // Representa uma lista duplamente encadeada dos processos
 typedef struct Processo
 {
-  pid_t pid;
-  char **args;    // Argumentos passados para o exec
-  int status;     // Estado do processo (STOPPED, DONE, RUNNING)
-  struct Processo* proximo; // Proximo processo na lista
-  struct Processo* anterior; // Processo anterior na lista
+    pid_t pid;
+    char **args;    // Argumentos passados para o exec
+    int status;     // Estado do processo (STOPPED, DONE, RUNNING)
+    struct Processo* proximo; // Proximo processo na lista
+    struct Processo* anterior; // Processo anterior na lista
 } Processo;
 
 // Lista de processos
