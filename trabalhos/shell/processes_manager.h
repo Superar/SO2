@@ -33,20 +33,27 @@ Processo* fg_proc;
 
 void insere_processo(Processo*);
 
-Processo* busca_processo(pid_t);
+// Busca um processo pelo seu pid
+Processo* busca_proc_pid(pid_t);
+
+// Busca um processo pelo seu numero de job (sequencia em que foi chamado)
+Processo* busca_proc_num_job(int);
 
 // Modifica o estado de um processo cujo pid foi passado como parametro
 // pelo estado tbm passado como parametro
 void atualiza_status_processo(pid_t, int);
 
+// Retira um processo da lista_proc pelo seu pid
 int retira_processo(pid_t);
+
+// Printa na tela todos os argumentos passados ao comando (incluindo seu nome)
+void print_args(char**);
+
+
+// Realiza o processo de execucao de um comando passado como parametro
+int executar_comando(Comando*);
 
 // Verifica se o comando digitado se trata de um builtin
 // Se for, executa o comando e retorna true, caso contrario, retorna false
 int verifica_builtins(Comando*);
-
-
-int executar_comando(Comando*);
-
-Processo* busca_proc_pid(pid_t);
 #endif

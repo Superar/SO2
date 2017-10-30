@@ -54,7 +54,7 @@ Comando* parse_comando(char *str_comando)
         exit(EXIT_FAILURE);
     }
 
-    // Seta a string lida como a string a ser processada pelo lexer
+    // Seta a string lida com a string a ser processada pelo lexer
     setup_lexer_string(str_comando);
 
     // Processa cada token
@@ -113,7 +113,7 @@ Comando* parse_comando(char *str_comando)
                 i++;
             }
         }
-        else if (tokens[i][0] == '2') {
+        else if (tokens[i][0] == '2' && tokens[i][1] == '>') {
             if(tokens[i+1] != NULL)
             {
                 cur_comando->err = tokens[i+1];
@@ -126,8 +126,12 @@ Comando* parse_comando(char *str_comando)
             // Se existir um pipe, cria um novo comando na lista
             if(tokens[i+1] != NULL)
             {
+                // NULL para indicar o fim dos argumentos do comando atual
+                cur_comando->args[cur_comando->nro_args] = NULL;
                 cur_comando->pipe = 1;
+                // cria o contexto para o comando do outro lado do pipe
                 cur_comando->next = init_comando();
+                // muda o contexto para o comando criado anteriormente
                 cur_comando = cur_comando->next;
                 cur_comando->args[0] = tokens[i+1];
                 cur_comando->nro_args++;
@@ -142,7 +146,7 @@ Comando* parse_comando(char *str_comando)
         }
     }
 
-    // NULL para indicar o fim dos argumentos
+    // NULL para indicar o fim dos argumentos do ultimo comando lido
     cur_comando->args[cur_comando->nro_args] = NULL;
 
     return comando;
